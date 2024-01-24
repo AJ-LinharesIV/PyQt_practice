@@ -1,0 +1,1 @@
+pyuic5 -x hello_simple.ui -o hello_simple.py
