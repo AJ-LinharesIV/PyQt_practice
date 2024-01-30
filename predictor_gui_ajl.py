@@ -1,5 +1,6 @@
 
 # Python Package Imports
+import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -17,20 +18,20 @@ class MatplotlibWidget(FigureCanvasQTAgg):
         FigureCanvasQTAgg.__init__(self, self.fig)
         self.setParent(parent)
 
-    def plot(self, x, y, save=False, savefile=''):
+    def plot(self, x, y):
         self.axes.clear()
         self.axes.plot(x, y)
         self.axes.set_title('Plot of y vs. x', fontweight='bold')
         self.axes.set_xlabel('x', fontweight='bold')
         self.axes.set_ylabel('y', fontweight='bold')
-
-        if save:
-            if savefile:
-                self.fig.savefig(savefile+'.pdf', format='pdf')
-            else:
-                print(f'Plot Output file name not provided...')
-
         self.draw()
+
+    def save_bool(self, savefile='')->bool:
+        if savefile:
+            self.fig.savefig(savefile+'.pdf', format='pdf')
+            return True
+        else:
+            return False
 
 class Predictor_UI_MainWindow(Ui_MainWindow):
 
@@ -72,7 +73,11 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
         save_choice = self.checkSavePlotToFile.isChecked()
         s_file = self.linePlotFile.text()
 
-        self.mpl_widge.plot(data['x'], data['y'], save=save_choice, savefile=s_file)
+        self.mpl_widge.plot(data['x'], data['y'])
+        if save_choice:
+            save_success = self.mpl_widge.save_bool(savefile=s_file)
+            if not save_success:
+                self.textBrowserOutput.append(f'No Plot Output File Name Provided.\nTry again.')
 
     def get_data_from_file(self)->pd.DataFrame:
         f_name = self.lineInputDataFile.text()
@@ -81,7 +86,7 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
             data = pd.read_csv(f_name)
             return data
         except FileNotFoundError:
-            print(f'file {f_name} not found in the current directory. Try again.')
+            self.textBrowserOutput.append(f'file {f_name} not found in the current directory.\nTry again.')
             return pd.DataFrame({'x': [0, 0], 'y': [0, 0]})
 
     def input_file_click(self):
@@ -103,7 +108,7 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
 
 # drive application
 if __name__ == "__main__":
-    import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Predictor_UI_MainWindow(main_wind=MainWindow)
