@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>852</width>
-    <height>548</height>
+    <width>976</width>
+    <height>673</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Future Predictor Tool v1.0</string>
+     <string>Meta Prophet Wrapper v1.0</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -41,14 +41,14 @@
    <widget class="QPushButton" name="ButtonPredict">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>120</y>
+      <x>680</x>
+      <y>130</y>
       <width>161</width>
       <height>61</height>
      </rect>
     </property>
     <property name="text">
-     <string>Predict The Future</string>
+     <string>Fit Model and Plot</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBoxInput">
@@ -136,8 +136,8 @@
      <rect>
       <x>10</x>
       <y>200</y>
-      <width>351</width>
-      <height>291</height>
+      <width>391</width>
+      <height>421</height>
      </rect>
     </property>
     <property name="title">
@@ -148,8 +148,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>331</width>
-       <height>261</height>
+       <width>371</width>
+       <height>391</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -197,8 +197,8 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>60</y>
+      <x>660</x>
+      <y>70</y>
       <width>211</width>
       <height>51</height>
      </rect>
@@ -230,13 +230,17 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>410</x>
       <y>200</y>
-      <width>441</width>
-      <height>291</height>
+      <width>541</width>
+      <height>421</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4"/>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QGraphicsView" name="graphicsView"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -244,7 +248,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>852</width>
+     <width>976</width>
      <height>26</height>
     </rect>
    </property>
