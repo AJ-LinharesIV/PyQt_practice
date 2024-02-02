@@ -18,7 +18,7 @@ class MplWidget(FigureCanvasQTAgg):
 
     def save_bool(self, savefile='')->bool:
         if savefile:
-            self.fig.savefig(savefile+'.pdf', format='pdf')
+            self.fig.savefig(savefile, format='pdf')
             return True
         else:
             return False
@@ -81,7 +81,7 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
             future = m.make_future_dataframe(periods=delta.days)
         else:
             self.textBrowserOutput.append(f'date {self.datePredictEnd.date().toPyDate()} is before or '
-                                   f'concurrent with last date in input dataset...\n'
+                                   f'concurrent with last date in input dataset...\n\n'
                                    f'Arbitrarily setting end date 365 days after last date in'
                                    f'dataset.\nTry again if this isnt what you want.\n')
             future = m.make_future_dataframe(periods=365)
@@ -91,20 +91,28 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
         forecast = m.predict(future)
 
         # get the predicted value for the specific date requested by user
-        spec_date = str(self.datePredictSpec.date().toPyDate())
-        if spec_date in forecast['ds'].values:
+        spec_date_pd = pd.to_datetime(pd.Series(self.datePredictSpec.date().toPyDate()))
+
+        if spec_date_pd[0] in forecast['ds'].values:
             fc = forecast.set_index('ds')
-            spec_yhat = fc['yhat'].loc[spec_date]
-            self.linePredValue.text(str(round(spec_yhat,3)))
+            spec_yhat = fc['yhat'].loc[spec_date_pd[0]]
+            self.linePredValue.setText(str(round(spec_yhat,3)))
         else:
             self.textBrowserOutput.append('Requested date doesnt appear in dataset...\nTry Again.\n')
+            self.linePredValue.setText('N/A')
 
-        # delete placeholder graphicsView widge from verticalLayout4 in prep for Prophet plot
+        # delete placeholder graphicsView widget from verticalLayout4 in prep for Prophet plot
         self.graphicsView.close()
         self.verticalLayout_4.update()
 
         # create an instance of the MplWidget using the Prophet .plot() method as the figure
         mpl_widget = MplWidget(figure=m.plot(forecast, figsize=(4,5), include_legend=True))
+
+        # save plot if reqd
+        if save_plot:
+            save_success = mpl_widget.save_bool(savefile=s_file)
+            if not save_success:
+                self.textBrowserOutput.append(f'No Plot Output File Name Provided.\nTry again.')
 
         # add the matplotlib widget to the main window
         layout = QtWidgets.QVBoxLayout()
@@ -113,12 +121,6 @@ class Predictor_UI_MainWindow(Ui_MainWindow):
         widget.setLayout(layout)
 
         self.verticalLayout_4.addWidget(widget)
-
-        # save plot if reqd
-        if save_plot:
-            save_success = mpl_widget.save_bool(savefile=s_file)
-            if not save_success:
-                self.textBrowserOutput.append(f'No Plot Output File Name Provided.\nTry again.')
 
 # drive application
 if __name__ == "__main__":
